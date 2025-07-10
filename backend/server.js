@@ -13,11 +13,16 @@ const commentsRoutes = require('./routes/comments');
 
 // Initialize express app
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Enable CORS for all routes
 app.use(cors({
-  origin: 'http://localhost:1313', // Your frontend URL
+  origin: [
+    `www.aqa.ninja`,
+    'https://your-frontend-domain.vercel.app', 
+    'http://localhost:1313', 
+    `blog-frontend-lilac-kappa.vercel.app`,
+    `blog-frontend-xzerghs-projects-939a283e.vercel.app`,
+    `blog-frontend-xzergh-xzerghs-projects-939a283e.vercel.app`],
   credentials: true
 }));
 
@@ -36,7 +41,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: `http://localhost:${PORT}`,
+        url: `http://localhost:${process.env.PORT || 3000}`,
         description: 'Development server',
       },
     ],
@@ -178,13 +183,19 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Not found', path: req.path });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`API Documentation available at http://localhost:${PORT}/api-docs`);
-}).on('error', (err) => {
-  console.error('Server failed to start:', err);
-});
+// Instead of directly calling app.listen, check if we're in a serverless environment
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`API Documentation available at http://localhost:${PORT}/api-docs`);
+  }).on('error', (err) => {
+    console.error('Server failed to start:', err);
+  });
+}
+
+// Export the Express app for serverless environments
+module.exports = app;
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
