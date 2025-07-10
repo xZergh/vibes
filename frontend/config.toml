@@ -1,0 +1,13 @@
+baseURL = "http://localhost:1313/"
+languageCode = "en-us"
+title = "My Blog"
+theme = "custom"
+
+[params]
+  description = "A proof of concept blog with comments"
+  
+  [params.comments]
+    enabled = true
+    baseURL = "http://localhost:3000"  # Make sure this points to your backend server
+
+languageCode = "en-us"

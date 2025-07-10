@@ -1,0 +1,321 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const apiUrl = document.body.getAttribute('data-api-url');
+    const postSlug = document.body.getAttribute('data-post-slug');
+    const commentsContainer = document.getElementById('comments-container');
+    const commentForm = document.getElementById('comment-form');
+    const loginPrompt = document.getElementById('login-prompt');
+    const commentsCountElement = document.getElementById('comments-count');
+    
+    // Check if user is logged in
+    function checkAuth() {
+        const token = localStorage.getItem('token');
+        if (token) {
+            commentForm.classList.remove('hidden');
+            loginPrompt.classList.add('hidden');
+            return true;
+        } else {
+            commentForm.classList.add('hidden');
+            loginPrompt.classList.remove('hidden');
+            return false;
+        }
+    }
+    
+    // Format date to a readable format
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffTime = Math.abs(now - date);
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 0) {
+            // Today - show time
+            return `Today at ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+        } else if (diffDays === 1) {
+            // Yesterday
+            return 'Yesterday';
+        } else if (diffDays < 7) {
+            // Within a week
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            return days[date.getDay()];
+        } else {
+            // Older than a week
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+        }
+    }
+    
+    // Get user initials for avatar
+    function getUserInitials(username) {
+        if (!username) return '?';
+        return username.split(' ').map(n => n[0]).join('').toUpperCase();
+    }
+    
+    // Create comment element
+    function createCommentElement(comment) {
+        const commentElement = document.createElement('div');
+        commentElement.className = 'comment';
+        commentElement.id = `comment-${comment.id}`;
+        
+        const initials = getUserInitials(comment.username);
+        
+        commentElement.innerHTML = `
+            <div class="comment-header">
+                <div class="comment-avatar">${initials}</div>
+                <div class="comment-meta">
+                    <a href="#" class="comment-author">${comment.username}</a>
+                    <span class="comment-date">${formatDate(comment.created_at)}</span>
+                </div>
+            </div>
+            <div class="comment-content">${comment.content}</div>
+            <div class="comment-actions">
+                <a href="#" class="comment-action reply-action" data-comment-id="${comment.id}">
+                    <span class="comment-action-icon">↩</span> Reply
+                </a>
+            </div>
+        `;
+        
+        return commentElement;
+    }
+    
+    // Organize comments into a nested structure
+    function organizeComments(comments) {
+        const commentMap = {};
+        const rootComments = [];
+        
+        // First pass: create a map of id -> comment
+        comments.forEach(comment => {
+            comment.replies = [];
+            commentMap[comment.id] = comment;
+        });
+        
+        // Second pass: link replies to parents
+        comments.forEach(comment => {
+            if (comment.parent_id) {
+                const parent = commentMap[comment.parent_id];
+                if (parent) {
+                    parent.replies.push(comment);
+                } else {
+                    rootComments.push(comment);
+                }
+            } else {
+                rootComments.push(comment);
+            }
+        });
+        
+        return rootComments;
+    }
+    
+    // Render a comment and its replies recursively
+    function renderCommentThread(comment) {
+        const threadElement = document.createElement('div');
+        threadElement.className = 'comment-thread';
+        
+        const commentElement = createCommentElement(comment);
+        threadElement.appendChild(commentElement);
+        
+        if (comment.replies && comment.replies.length > 0) {
+            const repliesContainer = document.createElement('div');
+            repliesContainer.className = 'comment-replies';
+            
+            comment.replies.forEach(reply => {
+                repliesContainer.appendChild(renderCommentThread(reply));
+            });
+            
+            threadElement.appendChild(repliesContainer);
+        }
+        
+        return threadElement;
+    }
+    
+    // Fetch and display comments
+    function fetchComments() {
+        fetch(`${apiUrl}/api/comments/${postSlug}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch comments');
+                }
+                return response.json();
+            })
+            .then(data => {
+                commentsContainer.innerHTML = '';
+                
+                if (data.length === 0) {
+                    commentsContainer.innerHTML = '<p class="no-comments">No comments yet. Be the first to comment!</p>';
+                    commentsCountElement.textContent = '(0)';
+                    return;
+                }
+                
+                commentsCountElement.textContent = `(${data.length})`;
+                
+                // Organize comments into threads
+                const rootComments = organizeComments(data);
+                
+                // Render each comment thread
+                rootComments.forEach(comment => {
+                    commentsContainer.appendChild(renderCommentThread(comment));
+                });
+                
+                // Add event listeners for reply buttons
+                document.querySelectorAll('.reply-action').forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (checkAuth()) {
+                            const commentId = this.getAttribute('data-comment-id');
+                            showReplyForm(commentId);
+                        }
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                commentsContainer.innerHTML = '<p class="error-message">Failed to load comments. Please try again later.</p>';
+            });
+    }
+    
+    // Show reply form under a specific comment
+    function showReplyForm(commentId) {
+        // Remove any existing reply forms
+        const existingForms = document.querySelectorAll('.reply-form-container');
+        existingForms.forEach(form =>
+    // Show reply form under a specific comment
+    function showReplyForm(commentId) {
+        // Remove any existing reply forms
+        const existingForms = document.querySelectorAll('.reply-form-container');
+        existingForms.forEach(form => form.remove());
+        
+        const commentElement = document.getElementById(`comment-${commentId}`);
+        if (!commentElement) return;
+        
+        const replyFormContainer = document.createElement('div');
+        replyFormContainer.className = 'reply-form-container';
+        replyFormContainer.innerHTML = `
+            <form class="reply-form">
+                <div class="form-group">
+                    <textarea class="reply-content" rows="3" required placeholder="Write your reply..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-submit">Reply</button>
+                </div>
+            </form>
+        `;
+        
+        // Insert after the comment actions
+        const commentActions = commentElement.querySelector('.comment-actions');
+        commentActions.parentNode.insertBefore(replyFormContainer, commentActions.nextSibling);
+        
+        // Focus the textarea
+        replyFormContainer.querySelector('textarea').focus();
+        
+        // Add event listeners
+        const cancelButton = replyFormContainer.querySelector('.btn-cancel');
+        cancelButton.addEventListener('click', function() {
+            replyFormContainer.remove();
+        });
+        
+        const replyForm = replyFormContainer.querySelector('form');
+        replyForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const content = this.querySelector('textarea').value.trim();
+            if (content) {
+                submitReply(commentId, content, replyFormContainer);
+            }
+        });
+    }
+    
+    // Submit a reply to a comment
+    function submitReply(parentId, content, formContainer) {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('You must be logged in to reply');
+            return;
+        }
+        
+        fetch(`${apiUrl}/api/comments`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                post_slug: postSlug,
+                content: content,
+                parent_id: parentId
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to post reply');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Remove the reply form
+            formContainer.remove();
+            
+            // Refresh comments to show the new reply
+            fetchComments();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to post reply. Please try again.');
+        });
+    }
+    
+    // Submit a new top-level comment
+    function submitComment(e) {
+        e.preventDefault();
+        
+        const content = document.getElementById('comment-content').value.trim();
+        if (!content) return;
+        
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('You must be logged in to comment');
+            return;
+        }
+        
+        fetch(`${apiUrl}/api/comments`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                post_slug: postSlug,
+                content: content
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to post comment');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Clear the form
+            document.getElementById('comment-content').value = '';
+            
+            // Refresh comments
+            fetchComments();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to post comment. Please try again.');
+        });
+    }
+    
+    // Initialize
+    checkAuth();
+    fetchComments();
+    
+    // Event listeners
+    commentForm.addEventListener('submit', submitComment);
+    
+    // Listen for auth changes
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'token') {
+            checkAuth();
+        }
+    });
+});

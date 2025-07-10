@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My First Blog Post | My Blog</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="/">My Blog</a></h1>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/posts">Blog</a></li>
+                </ul>
+            </nav>
+            <div id="auth-container">
+                
+            </div>
+        </div>
+    </header>
+    
+    <main class="container">
+        
+    <article class="post">
+        <h1>My First Blog Post</h1>
+        <time>July 10, 2025</time>
+        <div class="content">
+            <h1 id="welcome-to-my-first-blog-post">Welcome to My First Blog Post</h1>
+<p>This is a debug blog post to demonstrate the comments functionality.</p>
+<h2 id="what-is-this-blog-about">What is this blog about?</h2>
+<p>This blog is a proof of concept for a vibe-coded self-hosted blog with comments functionality. It uses:</p>
+<ul>
+<li>Hugo for the static site generation</li>
+<li>Express.js for the backend API</li>
+<li>PostgreSQL for the database</li>
+<li>JWT for authentication</li>
+</ul>
+<h2 id="how-to-use-the-comments-system">How to use the comments system</h2>
+<p>It&rsquo;s not recommended, since I&rsquo;ll most likely loose the data.</p>
+<ol>
+<li>Register an account or log in</li>
+<li>Scroll to the bottom of any post</li>
+<li>Write your comment and submit</li>
+<li>Your comment will be posted immediately</li>
+</ol>
+<h2 id="lorem-ipsum">Lorem Ipsum</h2>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, quis aliquam nisl nunc quis nisl. Nullam euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, quis aliquam nisl nunc quis nisl.</p>
+<h3 id="code-example">Code Example</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">helloWorld</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;Hello, world!&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+        </div>
+    </article>
+    
+    
+        <section class="comments-section">
+    <h2>Comments <span class="comments-count" id="comments-count"></span></h2>
+    
+    <div id="comments-container" class="comments-container">
+        <p class="loading-message">Loading comments...</p>
+    </div>
+    
+    <div class="comment-form-container">
+        <form id="comment-form" class="hidden">
+            <h3>Leave a Comment</h3>
+            <div class="form-group">
+                <textarea id="comment-content" name="content" rows="4" required placeholder="Share your thoughts..."></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">Post Comment</button>
+            </div>
+        </form>
+        
+        <div id="login-prompt" class="login-prompt">
+            <p>Please <a href="/login" class="login-link">log in</a> to leave a comment.</p>
+        </div>
+    </div>
+</section>
+
+<script>
+    
+    document.body.setAttribute('data-post-slug', 'first-post');
+    
+    document.body.setAttribute('data-api-url', 'http:\/\/localhost:3000');
+</script>
+<script src="/js/comments.js"></script>
+    
+
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 My Blog</p>
+        </div>
+    </footer>
+    
+    <script src="/js/auth.js"></script>
+</body>
+</html>
