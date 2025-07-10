@@ -70,14 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const date = document.createElement('span');
             date.className = 'comment-date';
-            // Format the date more nicely
-            date.textContent = new Date(comment.created_at).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+            date.textContent = new Date(comment.created_at).toLocaleDateString();
             
             const commentContent = document.createElement('div');
             commentContent.className = 'comment-content';
@@ -94,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         deleteButton.textContent = 'Delete';
                         deleteButton.dataset.commentId = comment.id;
                         deleteButton.addEventListener('click', deleteComment);
-                        commentItem.appendChild(deleteButton); // Append to commentItem instead of commentHeader
+                        commentHeader.appendChild(deleteButton);
                     }
                 } catch (e) {
                     console.error('Error parsing token:', e);

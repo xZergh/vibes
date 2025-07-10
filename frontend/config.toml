@@ -1,4 +1,4 @@
-baseURL = "http://localhost:1313/"
+baseURL = "https://www.aqa.ninja" 
 languageCode = "en-us"
 title = "My Blog"
 theme = "custom"
@@ -8,6 +8,6 @@ theme = "custom"
   
   [params.comments]
     enabled = true
-    baseURL = "http://localhost:3000"  # Make sure this points to your backend server
+    baseURL = "blog-backend-psi-rosy.vercel.app"
 
 languageCode = "en-us"

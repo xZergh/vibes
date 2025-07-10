@@ -1,0 +1,8 @@
+{
+    "version": 2,
+    "buildCommand": "hugo --minify",
+    "outputDirectory": "public",
+    "github": {
+        "silent": true
+    }
+}
