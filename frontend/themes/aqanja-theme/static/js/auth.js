@@ -1,4 +1,20 @@
+// API base URL
+const API_URL = 'http://localhost:3000/api';
+console.log('Auth.js loaded');
 document.addEventListener('DOMContentLoaded', function() {
+  //DEBUG
+  console.log('DOM loaded in auth.js');
+  // Check if auth-container exists
+  const authContainer = document.getElementById('auth-container');
+  console.log('Auth container:', authContainer);
+  // Debug page content
+  console.log('Current page path:', window.location.pathname);
+  console.log('Page title:', document.title);
+  console.log('Main content:', document.querySelector('main')?.innerHTML || 'No main element found');
+  console.log('All forms on page:', document.querySelectorAll('form'));
+  console.log('Login form:', document.getElementById('login-form'));
+  //DEBUG
+
   // Check if user is logged in
   checkAuthStatus();
   
@@ -20,9 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
     logoutBtn.addEventListener('click', handleLogout);
   }
 });
-
-// API base URL
-const API_URL = 'http://localhost:3000/api';
 
 // Check if user is logged in
 function checkAuthStatus() {

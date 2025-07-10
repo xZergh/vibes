@@ -1,3 +1,6 @@
+// API base URL
+const API_URL = 'http://localhost:3000/api';
+
 document.addEventListener('DOMContentLoaded', function() {
     // Get the post slug from the data attribute
     const postSlug = document.body.getAttribute('data-post-slug');
@@ -10,9 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const commentsContainer = document.getElementById('comments-container');
     const commentForm = document.getElementById('comment-form');
     const loginPrompt = document.getElementById('login-prompt');
-    
-    // API base URL - ensure this points to your backend server
-    const API_BASE_URL = 'http://localhost:3000'; // Update this to match your backend URL
+
     
     // Check if user is logged in
     function checkAuthStatus() {
@@ -34,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fetch comments for the current post
     async function fetchComments() {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/comments/${postSlug}`);
+            const response = await fetch(`${API_URL}/comments/${postSlug}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch comments');
             }
@@ -124,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         try {
-            const response = await fetch(`${API_BASE_URL}/api/comments`, {
+            const response = await fetch(`${API_URL}/comments`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -177,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         try {
-            const response = await fetch(`${API_BASE_URL}/api/comments/${commentId}`, {
+            const response = await fetch(`${API_URL}/comments/${commentId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
