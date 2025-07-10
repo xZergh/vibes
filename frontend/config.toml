@@ -1,13 +1,11 @@
-baseURL = "https://www.aqa.ninja" 
+baseURL = "https://www.aqa.ninja/"
 languageCode = "en-us"
-title = "My Blog"
-theme = "custom"
+title = "AQA notes"
+theme = "aqanja-theme"
 
 [params]
-  description = "A proof of concept blog with comments"
+  description = "Just a pet blog for sharing my AQA notes."
   
   [params.comments]
     enabled = true
-    baseURL = "blog-backend-psi-rosy.vercel.app"
-
-languageCode = "en-us"
+    baseURL = "https://blog-backend-psi-rosy.vercel.app"
