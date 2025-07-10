@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login | My Blog</title>
+    <title>{{ .Title }} | My Blog</title>
     <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/auth.js"></script>
 </head>
 <body>
     <header>
@@ -17,21 +18,20 @@
                 </ul>
             </nav>
             <div id="auth-container">
-                
+                <!-- Auth buttons will be inserted here by JS -->
             </div>
         </div>
     </header>
     
     <main class="container">
-        
+        {{ .Content }}
     </main>
     
     <footer>
         <div class="container">
-            <p>&copy; 2025 My Blog</p>
+            <p>&copy; 2025 AQA Ninja</p>
         </div>
     </footer>
     
-    <script src="/js/auth.js"></script>
 </body>
 </html>

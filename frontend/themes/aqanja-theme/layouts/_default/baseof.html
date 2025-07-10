@@ -1,37 +1,36 @@
 <!DOCTYPE html>
 <html>
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tags | My Blog</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title>{{ if .Title }}{{ .Title }} {{ end }}</title>
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/blog.css">
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
     <header>
-        <div class="container">
-            <h1><a href="/">My Blog</a></h1>
+        <div class="nav-container">
             <nav>
                 <ul>
                     <li><a href="/">Home</a></li>
-                    <li><a href="/posts">Blog</a></li>
+                    <li><a href="/posts">Posts</a></li>
                 </ul>
             </nav>
             <div id="auth-container">
-                
+                <!-- Auth buttons will be inserted here by JS -->
             </div>
         </div>
     </header>
     
     <main class="container">
-        
-    <h1>Tags</h1>
-    
-
+        {{ block "main" . }}{{ end }}
     </main>
     
     <footer>
         <div class="container">
-            <p>&copy; 2025 My Blog</p>
+            <p>&copy; 2025 AQA Ninja</p>
         </div>
     </footer>
     
