@@ -1,4 +1,6 @@
 require('dotenv').config();
+const path = require('path');
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -17,12 +19,11 @@ const app = express();
 // Enable CORS for all routes
 app.use(cors({
   origin: [
-    `www.aqa.ninja`,
-    'https://your-frontend-domain.vercel.app', 
     'http://localhost:1313', 
-    `blog-frontend-lilac-kappa.vercel.app`,
-    `blog-frontend-xzerghs-projects-939a283e.vercel.app`,
-    `blog-frontend-xzergh-xzerghs-projects-939a283e.vercel.app`],
+    `https://www.aqa.ninja`,
+    `https://blog-frontend-lilac-kappa.vercel.app`,
+    `https://blog-frontend-xzerghs-projects-939a283e.vercel.app`,
+    `https://blog-frontend-xzergh-xzerghs-projects-939a283e.vercel.app`],
   credentials: true
 }));
 
@@ -43,6 +44,10 @@ const swaggerOptions = {
       {
         url: `http://localhost:${process.env.PORT || 3000}`,
         description: 'Development server',
+      },
+      {
+        url: 'https://blog-backend-psi-rosy.vercel.app',
+        description: 'Production server',
       },
     ],
     components: {
@@ -88,13 +93,28 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 // Middleware
 app.use(helmet({
-  contentSecurityPolicy: false, // Disable for development
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:"],
+      connectSrc: ["'self'", "*"]
+    }
+  }
 }));
 app.use(morgan('dev'));
 app.use(express.json());
 
+
 // Swagger documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { 
+  explorer: true ,
+  customCssUrl: '/api-docs/swagger-ui.css',
+    swaggerOptions: {
+    url: null, 
+  }
+}));
 
 /**
  * @swagger
