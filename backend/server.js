@@ -108,10 +108,33 @@ app.use(express.json());
 
 
 // Swagger documentation
+const swaggerUiAssetPath = require("swagger-ui-dist").getAbsoluteFSPath();
+app.use('/api-docs', express.static(swaggerUiAssetPath));
+app.get('/api-docs/swagger-ui.css', (req, res) => {
+  const fs = require('fs');
+  const cssPath = path.join(swaggerUiAssetPath, 'swagger-ui.css');
+  
+  res.setHeader('Content-Type', 'text/css');
+  
+  if (fs.existsSync(cssPath)) {
+    res.sendFile(cssPath);
+  } else {
+    // Fallback CSS if file doesn't exist
+    res.send(`
+      .swagger-ui .topbar {
+        background-color: #2c3e50;
+      }
+      .swagger-ui .info .title {
+        color: #2c3e50;
+      }
+    `);
+  }
+});
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { 
   explorer: true ,
   customCssUrl: '/api-docs/swagger-ui.css',
-    swaggerOptions: {
+  swaggerOptions: {
     url: null, 
   }
 }));
