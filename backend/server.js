@@ -27,6 +27,25 @@ app.use(cors({
   credentials: true
 }));
 
+
+
+// Middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:"],
+      connectSrc: ["'self'", "*"]
+    }
+  }
+}));
+app.use(morgan('dev'));
+app.use(express.json());
+
+
+
 // Swagger definition
 const swaggerOptions = {
   definition: {
@@ -88,47 +107,19 @@ const swaggerOptions = {
   },
   apis: ['./server.js', './routes/*.js'], // Path to the API routes files
 };
-
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
-
-// Middleware
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:"],
-      connectSrc: ["'self'", "*"]
-    }
-  }
-}));
-app.use(morgan('dev'));
-app.use(express.json());
-
-
 // Swagger documentation
-const swaggerUiAssetPath = require("swagger-ui-dist").getAbsoluteFSPath();
-app.use('/api-docs', express.static(swaggerUiAssetPath));
 app.get('/api-docs/swagger-ui.css', (req, res) => {
   const fs = require('fs');
-  const cssPath = path.join(swaggerUiAssetPath, 'swagger-ui.css');
-  
   res.setHeader('Content-Type', 'text/css');
-  
-  if (fs.existsSync(cssPath)) {
-    res.sendFile(cssPath);
-  } else {
     // Fallback CSS if file doesn't exist
-    res.send(`
-      .swagger-ui .topbar {
-        background-color: #2c3e50;
-      }
-      .swagger-ui .info .title {
-        color: #2c3e50;
-      }
-    `);
-  }
+    const cssPath = path.join(__dirname, 'static', 'swagger-ui-fallback.css');
+    if (fs.existsSync(cssPath)) {
+      res.sendFile(cssPath);
+    } else {
+      res.status(404).send('CSS file not found');
+    }
+  
 });
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { 
